@@ -1,0 +1,203 @@
+baseURL: "https://knoxknot.github.io/"
+defaultContentLanguage: "en"
+enableEmoji: true
+enableRobotsTXT : true
+googleAnalytics: ""
+languageCode: "en-us"
+paginate: 5
+title: "DevSecOps"
+theme: "LoveIt"
+summarylength : 50
+
+menu:
+  main:
+  - name : "Home"
+    identifier : "home"
+    weight : 100
+    url : "/"
+  - name : "About"
+    weight : 200
+    identifier : "about"
+    url : "/about"
+  - name : "Writings"
+    weight : 300
+    identifier : "writings"
+    url : "/writings/"
+  - name : "Talks"
+    weight : 400
+    identifier : "talks"
+    url : "/talks"
+  - name : "Life"
+    weight : 500
+    identifier : "life"
+    url : "/life"
+
+module:
+  hugoVersion:
+    extended: true
+    min: "0.62.0"
+
+params:
+  title : "DevSecOps"
+  dateFormat: "2023-Jan-02"
+  defaultTheme: "auto"
+  description : "An Infrastructure Engineer Keen on Security."
+  images: []
+  keywords: ["infrastructure", "security", "software", "engineering", "ethical hacking", "penetration testing", "Samuel Nwoye"]
+  
+  analytics:
+    enable: false
+    google:
+      id: ""
+      anonymizeIP: false
+
+  home:
+    profile: 
+      enable: true
+      gravatarEmail: ""
+      avatarURL: "/images/profile.jpg"
+      title: "Samuel Nwoye"
+      subtitle: "An Infrastructure Engineer Keen on Security."
+      typeit: false
+      social: true
+      disclaimer: ""
+    posts:
+      enable: true
+      paginate: 5
+  
+  header:
+    desktopMode: "fixed"
+    mobileMode: "auto"
+    title:
+      logo: "/images/logo.png"
+      name: "DevSecOps"
+
+  footer:
+    enable: true
+    custom: "The Effective Efficient Engineer"
+    hugo: false
+    copyright: true
+    author: true
+    since: 2023
+
+  section:
+    pagination: 10
+    dateFormat: "Jan-02"
+    rss: 5
+
+  list:
+    pagination: 10
+    dateFormat: "Jan-02"
+    rss: 5
+
+  page:
+    hiddenFromHomePage: false
+    hiddenFromSearch: false
+    twemoji: false
+    lightgallery: false
+    ruby: true
+    fraction: true
+    fontawesome: true
+    linkToMarkdown: false
+    rssFullText: false
+    toc:
+      enable: true
+      keepStatic: false
+      auto: true
+    code:
+      copy: true
+      maxShownLines: 50
+    math:
+      enable: false
+      copyTex: true
+      mhchem: true
+    share:
+      enable: true
+      twitter: true
+      linkedin: true
+      hackerNews: true
+      whatsapp: true
+    comment:
+      enable: true
+      disqus:
+        enable: false
+        shortname: ""
+
+  search : 
+    enable: true 
+    type: "lunr"
+    contentLength: 4000
+    placeholder: "What are you looking for?"
+    maxResultLength: 5
+    snippetLength: 50
+    highlightTag: "em"
+    absoluteURL: false
+
+  social:
+    github:
+      weight: 1
+      title : "GitHub"
+      id: "knoxknot"
+      prefix : "https://github.com/"
+      icon : 
+        class: "fab fa-github fa-fw"
+    linkedin:
+      weight: 2
+      title : "Linkedin"
+      id: "samuelnwoye"
+      prefix : "https://linkedin.com/in/"
+      icon : 
+        class: "fab fa-linkedin fa-fw"
+    twitter:
+      weight: 3
+      title : "Twitter"
+      id: "nwoyesamuelc"
+      prefix : "https://twitter.com/"
+      icon : 
+        class: "fab fa-twitter fa-fw"
+
+  typeit:
+    cursorChar: "|"
+    cursorSpeed: 1000
+    duration: -1
+    speed: 100
+      
+markup:
+  defaultMarkdownHandler: goldmark
+  goldmark:
+    extensions:
+      definitionList: true
+      footnote: true
+      linkify: true
+      linkifyProtocol: true
+      strikethrough: true
+      table: true
+      taskList: true
+      typographer: true
+    render:
+      hardWraps: false
+      unsafe: false
+      xhtml: false
+
+  highlight:
+    codeFences: true
+    guessSyntax: true
+    lineNos: true
+    lineNumbersInTable: true
+    noClasses: false
+  tableOfContents:
+    startLevel: 2
+    endLevel: 6
+
+minify:
+  disableXML: true
+  minifyOutput: false
+
+publishDir: "public"
+
+taxonomies:
+  category: categories
+  series: series
+  tag: tags
+
+timeout: 30000

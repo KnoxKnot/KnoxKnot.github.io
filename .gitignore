@@ -1,0 +1,4 @@
+/resources
+.terraform/
+terraform.tfstate
+*.tfvars

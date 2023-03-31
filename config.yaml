@@ -26,23 +26,23 @@ menu:
   - name : "Talks"
     weight : 400
     identifier : "talks"
-    url : "/talks"
+    url : "/talks/"
   - name : "Life"
     weight : 500
     identifier : "life"
-    url : "/life"
+    url : "/life/"
 
 module:
   hugoVersion:
     extended: true
-    min: "0.62.0"
+    min: "0.111.1"
 
 params:
   title : "DevSecOps"
   dateFormat: "2023-Jan-02"
   defaultTheme: "auto"
   description : "An Infrastructure Engineer Keen on Security."
-  images: []
+  images: ["/images/logo.png"]
   keywords: ["infrastructure", "security", "software", "engineering", "ethical hacking", "penetration testing", "Samuel Nwoye"]
   
   analytics:
@@ -98,7 +98,7 @@ params:
     ruby: true
     fraction: true
     fontawesome: true
-    linkToMarkdown: false
+    linkToMarkdown: true
     rssFullText: false
     toc:
       enable: true
@@ -111,6 +111,11 @@ params:
       enable: false
       copyTex: true
       mhchem: true
+    seo:
+      images: []
+      publisher:
+        name: "Samuel Nwoye"
+        logoUrl: "images/profile.jpg"
     share:
       enable: true
       twitter: true
@@ -132,6 +137,10 @@ params:
     snippetLength: 50
     highlightTag: "em"
     absoluteURL: false
+
+  seo:
+    image: "/images/devsecops.png"
+    thumbnailUrl: "images/devsecops-small.png"
 
   social:
     github:
@@ -161,6 +170,8 @@ params:
     cursorSpeed: 1000
     duration: -1
     speed: 100
+
+  version: "0.2.x"
       
 markup:
   defaultMarkdownHandler: goldmark
@@ -176,7 +187,7 @@ markup:
       typographer: true
     render:
       hardWraps: false
-      unsafe: false
+      unsafe: true
       xhtml: false
 
   highlight:
@@ -193,7 +204,19 @@ minify:
   disableXML: true
   minifyOutput: false
 
+outputs:
+  home: ["HTML","RSS","JSON"]
+  page: ["HTML","MarkDown"]
+  section: ["HTML","RSS"]
+  taxonomy: ["HTML","RSS"]
+  taxonomyTerm: ["HTML"]
+
 publishDir: "public"
+
+sitemap:
+  changefreq: "weekly"
+  filename: "sitemap.xml"
+  priority: 0.5
 
 taxonomies:
   category: categories
@@ -201,3 +224,8 @@ taxonomies:
   tag: tags
 
 timeout: 30000
+
+frontmatter:
+  date: ["date","publishDate","lastmod"]
+  lastmod: [":git","lastmod","date","publishDate"]
+  publishDate: ["publishDate","date"]

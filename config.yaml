@@ -14,22 +14,27 @@ menu:
   - name : "Home"
     identifier : "home"
     weight : 100
+    pre: "<i class='fa-solid fa-home'></i>"
     url : "/"
   - name : "About"
     weight : 200
     identifier : "about"
+    pre: "<i class='fa-solid fa-user'></i>"
     url : "/about"
   - name : "Writings"
     weight : 300
     identifier : "writings"
+    pre: "<i class='fa-solid fa-pencil'></i>"
     url : "/writings/"
   - name : "Talks"
     weight : 400
     identifier : "talks"
+    pre: "<i class='fa-solid fa-microphone'></i>"
     url : "/talks/"
   - name : "Life"
     weight : 500
     identifier : "life"
+    pre: "<i class='fa-solid fa-hourglass'></i>"
     url : "/life/"
 
 module:
@@ -39,7 +44,7 @@ module:
 
 params:
   title : "DevSecOps"
-  dateFormat: "2023-Jan-02"
+  dateFormat: "2006-Jan-02"
   defaultTheme: "auto"
   description : "An Infrastructure Engineer Keen on Security."
   images: ["/images/logo.png"]

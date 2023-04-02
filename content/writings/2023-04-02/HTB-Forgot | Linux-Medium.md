@@ -3,7 +3,7 @@ title: "HTB Forgot | Linux - Medium"
 author: "Samuel Nwoye"
 date: 2023-04-02T08:58:00+02:00
 description: ""
-draft: true
+draft: false
 disableComments: false
 categories: ["security"]
 series: [] #Taxonomy to list "See Also" Section in Opengraph Templates

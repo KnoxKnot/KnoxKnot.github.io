@@ -13,7 +13,7 @@ summary: ""
 ---
 HackTheBox Forgot is a Linux machine rated Medium. Flawed with security misconfiguration(A05:2021), identification and authentication failures(A07:2021), vulnerable and outdated components(A06:2021), and injection(A03:2021).
 
-Attack Workflow: Leverage Host header attack in exploiting the password reset vulnerability. Take advantage of the varnish cache misconfiguration in executing a web cache poisoning attack. Exploit a vulnerable component using code injection attack to gain root privilege. 
+Attack Chain: Leverage Host header attack in exploiting the password reset vulnerability. Take advantage of the varnish cache misconfiguration in executing a web cache poisoning attack. Exploit a vulnerable component using code injection attack to gain root privilege. 
 
 ##### Initialization
 ```bash

@@ -15,13 +15,13 @@ HackTheBox Forgot is a Linux machine rated Medium. Flawed with security misconfi
 
 Attack Chain: Leverage Host header attack in exploiting the password reset vulnerability. Take advantage of the varnish cache misconfiguration in executing a web cache poisoning attack. Exploit a vulnerable component using code injection attack to gain root privilege. 
 
-##### Initialization
+#### Initialization
 ```bash
 # connect to vpn
 sudo openvpn --auth-nocache --config lab_connection.ovpn
 ``` 
 
-##### Enumeration
+#### Enumeration
 ```bash
 # discover ports and services
 nmap -sC -sV  -vvv -oA nmap_forgot 10.10.11.188
@@ -78,12 +78,12 @@ wfuzz -z file,/usr/share/seclists/Discovery/Web-Content/common.txt --hc 404 -t 5
 /tickets 302
 ```
 
-##### Exploration
+#### Exploration
 Tried several manual passwords using admin username with no result. Started Burp suite, investigated the site and discovered the comment, `<!-- Q1 release fix by robert-dev-87120 -->`, which appears to be populated dynamically. Copied the exact username for a specific session and again tried several passwords to gain entrance but was unsuccessful. Then used the 'forgot the password' in order to reset this particular user's password.
 
 ![Reset Password](/images/forgot/forgot01.png "Reset Password")
 
-##### Exploitation
+#### Exploitation
 Our initial enumeration did not show a mail service. How can we get this link and reset this user's password and gain access to the application? Let's intercept this path in Burp suite and send to Repeater.
 ![Intercept Forgot URL](/images/forgot/forgot02.png "Intercept Forgot URL")
 
@@ -171,7 +171,7 @@ cat user.txt    # capture the user flag
 
 ![Browser Display of Diego's Credentials](/images/forgot/forgot09.png "Browser Display of Diego's Credentials")
 
-##### Escalation
+#### Escalation
 ```shell
 cat bot.py      # show contents # see bot.py
 id              # list current user details
@@ -419,7 +419,7 @@ The script then connects to a MySQL database and retrieves a set of strings to u
 It is unclear what the overall purpose of the script is or what kind of data it is processing. The script may be part of a larger system that is used to detect malicious web traffic or other security-related tasks.
 ```
 
-Usually when an engagement involves reading source code, focus on searching for the vulnerabilities in the library and functions employed in the code, after fairly understanding the code. You can use google, or take a look at the functions documentation. Now keep in mind that you cannot edit the `ml_security.py` script. You have to look for another entry point. Read the linked references to understand the several functions used within the code: [gensim.models.doc2vec](https://radimrehurek.com/gensim/models/doc2vec.html) [pickle](https://omz-software.com/editorial/docs/library/pickle.html) [word_tokenize](https://www.educative.io/answers/what-is-wordtokenize-in-python). Found that the `tensorflow.python.tools.saved_model_cli` was code injectable see [TensorFlow Python Code Injection: More eval() Woes](https://jfrog.com/blog/tensorflow-python-code-injection-more-eval-woes/), and [Code injection in `saved_model_cli` in TensorFlow](https://github.com/advisories/GHSA-75c9-jrh4-79mc)
+Usually when an engagement involves reading source code, focus on searching for the vulnerabilities in the library and functions employed in the code, after fairly understanding the code. You can use google, or take a look at the functions documentation. Now keep in mind that you cannot edit the `ml_security.py` script. You have to look for another entry point. Read the linked references to understand the several functions used within the code: [gensim.models.doc2vec](https://radimrehurek.com/gensim/models/doc2vec.html) [pickle](https://omz-software.com/editorial/docs/library/pickle.html) [word_tokenize](https://www.educative.io/answers/what-is-wordtokenize-in-python). Found that the `tensorflow.python.tools.saved_model_cli` was code injectable see [TensorFlow Python Code Injection: More eval() Woes](https://jfrog.com/blog/tensorflow-python-code-injection-more-eval-woes/), and [Code injection in `saved_model_cli` in TensorFlow](https://github.com/advisories/GHSA-75c9-jrh4-79mc).
 ```shell
 # check tensorflow version
 pip freeze | grep tensorflow   # for details use: pip show tensorflow
@@ -453,7 +453,7 @@ id
 cat /root/root.txt     # capture the root flag
 ```
 
-##### Remediation
+#### Remediation
 **Fixing the Foothold Vector**  
 On an employee level, the user Diego should never have shared his credentials via that medium. There are several tools for sharing sensitive credentials e.g keybase. Some of these tools destroy the credentials after the first read. The Tickets(escalated) tab was disabled so that only admins can access it. Notice that if you logged in with the admin credentials looted from the bot.py it shows 'Logged In As Robert' navigating to the `/admin_tickets` then shows 'Logged In As Admin' and the Tickets(Escalated) tab remained disabled. There are quite some flaws with this application. However, focusing on the infrastructure end there is one fundamental mistake the administrator made in the varnish configuration i.e allowing the session cookie to be returned on the cached content.
 ```shell
@@ -605,8 +605,8 @@ Connection: keep-alive
 pip install --upgrade tensorflow==2.7.2 tensorflow-estimator==2.7.2
 ```
 
-##### Other References
-[Guide to Python Pickle](https://snyk.io/blog/guide-to-python-pickle/) [Exploiting Insecure Deserialization bugs found in the Wild (Python Pickles)](https://macrosec.tech/index.php/2021/06/29/exploiting-insecuredeserialization-bugs-found-in-the-wild-python-pickles/) [Practical Web Cache Poisoning pdf - James Kettle](https://i.blackhat.com/us-18/Thu-August-9/us-18-Kettle-Practical-Web-Cache-Poisoning-Redefining-Unexploitable.pdf) [Practical Web Cache Poisoning youtube- James Kettle](https://www.youtube.com/watch?v=j2RrmNxJZ5c) [Code Injection Attack](https://www.invicti.com/learn/remote-code-execution-rce/)  
+#### References
+[Guide to Python Pickle](https://snyk.io/blog/guide-to-python-pickle/), [Exploiting Insecure Deserialization bugs found in the Wild (Python Pickles)](https://macrosec.tech/index.php/2021/06/29/exploiting-insecuredeserialization-bugs-found-in-the-wild-python-pickles/), [Practical Web Cache Poisoning pdf - James Kettle](https://i.blackhat.com/us-18/Thu-August-9/us-18-Kettle-Practical-Web-Cache-Poisoning-Redefining-Unexploitable.pdf), [Practical Web Cache Poisoning youtube - James Kettle](https://www.youtube.com/watch?v=j2RrmNxJZ5c), [Code Injection Attack](https://www.invicti.com/learn/remote-code-execution-rce/).  
   
     
 ---  

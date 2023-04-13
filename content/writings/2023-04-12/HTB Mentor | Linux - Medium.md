@@ -723,7 +723,7 @@ ns.log")
 ```
 
 #### Remediation
-**Fixing the Foothold Vector**
+**Fixing the Foothold Vector**  
 Although the discovery of 'kj23sadkj123as0-d213' via SNMP was the gateway to the comprise because the developer forgot to clean up the cron command used via the svc user. This comprise unfortunately was a code flaw issue. 
 [svc user cron file](#svccronfile)
 ```text
@@ -789,7 +789,7 @@ async def backup(payload: backup):
     return {"INFO": "Done!"}
 ```
 
-**Fixing the Privilege Escalation Vector**
+**Fixing the Privilege Escalation Vector**  
 Well normally configurations do have some sensitive credentials in them. They are almost always necessary for application to run. Some best practice though would be using a configuration management tool - consul, vault, ansible etc - which comes with some overhead. These tools too store those files in plain text after they must have been initially fetched. As earlier mentioned the infrastructure engineer would have used a non default community string and long enough too. 
 
 #### References

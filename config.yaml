@@ -216,6 +216,9 @@ outputs:
   taxonomy: ["HTML","RSS"]
   taxonomyTerm: ["HTML"]
 
+permalinks:
+  writings: ":sections/:slug/"
+
 publishDir: "public"
 
 sitemap:

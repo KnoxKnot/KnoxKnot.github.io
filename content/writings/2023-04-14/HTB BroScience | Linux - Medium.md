@@ -15,13 +15,13 @@ HackTheBox Broscience is a Linux machine rated Medium. This machine is flawed wi
 
 Attack Chain: An initial source code disclosure caused by a directory traversal vulnerability, improper implementation of activation token, and exploiting an insecure deserialization gave the attacker an initial foothold. Further exploiting a shell injection vulnerability within a certificate renewal script elevated the attacker's privileges to the root user.
 
-##### Initialization
+#### Initialization
 ```bash
 # connect to vpn
 sudo openvpn --auth-nocache --config lab_kralyn.ovpn
 ``` 
 
-##### Enumeration
+#### Enumeration
 ```bash
 # discover ports and services
 nmap --max-rate=500 -sC -sV -Pn -sS -sU -vvv -oA nmap_broscience 10.10.11.195
@@ -114,7 +114,7 @@ wfuzz -z file,/usr/share/seclists/Discovery/Web-Content/raft-medium-files-lowerc
 /update_user.php 302
 ```
 
-##### Exploration
+#### Exploration
 I tried registering but there was no way to intercept the activation link. Then I explored the resulting paths from the directory discovery. The `includes` and `user.php` appeared interesting. On checking the `user.php` I encounter an error `Missing ID value`. Tried the user.php again with parameter key `id`  using values 1 through 5 which return some user detail but no credential or anything juicy. 
 ```shell
 curl -s -k https://broscience.htb/user.php?id=1 | html2text
@@ -619,7 +619,7 @@ ls -lah                          # list all content
 cat user.txt                     # capture the user flag.
 ```
 
-##### Escalation
+#### Escalation
 ```bash				       
 sudo -l					# users sudo right - none
 
@@ -720,7 +720,7 @@ whoami       # user is effectively root
 cat /root/root.txt    # capture the root flag
 ```
 
-###### Exfiltration
+#### Exfiltration
 Collect the source code and helper scripts for further analysis.
 ```shell
 # start a python server on the victim's machine
@@ -735,7 +735,7 @@ cd source    # change directory into source
 rm -fr .local .cache .profile .viminfo .bashrc .bash_history root.txt
 ```
 
-###### Remediation
+#### Remediation
 **Fixing the Foothold Vector**  
 Although the developer tried preventing the path traversal vulnerability by comparing the user input against a blacklist words - whilelisting is mostly advised, the `file_get_contents` and  `__wakeup`  functions were the culprits that enabled a foothold on the system.  See reference for [properly implementing php's `file_get_contents`](https://stackoverflow.com/questions/6085496/php-directory-traversal-issue/6085523#6085523).
 [fixed img.php](#)
@@ -794,7 +794,7 @@ The privilege escalation vector is quite common in bash scripts. Interpolating a
 54    /bin/bash -c "mv /tmp/temp.crt /home/bill/Certs/${commonName@Q}.crt"
 ```
 
-###### References
+#### References
 [Double URL Encoding - Imperva](https://docs.imperva.com/bundle/on-premises-knowledgebase-reference-guide/page/double_url_encoding.htm), [Exploiting LFI Vulnerabilities - BlackHat](https://www.blackhatethicalhacking.com/articles/exploiting-lfi-vulnerabilities/), [Git Payloads! A Collection of Web Attack Payloads - Foospidy](https://github.com/foospidy/payloads), [Remote Code Execution through Unsafe Unserialize in PHP - Sjoerd Langkemper](https://www.sjoerdlangkemper.nl/2021/04/04/remote-code-execution-through-unsafe-unserialize/), [Never Pass Untrusted Data to Unserialize in PHP - Invcti](https://www.invicti.com/blog/web-security/untrusted-data-unserialize-php/),[Insecure Deserialization - PortSwigger](https://portswigger.net/web-security/deserialization), [Directory Traversal Attack: Real-life Attacks and Code Examples - BrightSec](https://brightsec.com/blog/directory-traversal-attack/), [PHP Random Number Generator: A Comprehensive Guide to rand(), mt_rand(), and random_int() Functions](https://copyprogramming.com/howto/php-random-number-generator-a-comprehensive-guide-to-rand-mt-rand-and-random-int-functions)
 
 

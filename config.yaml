@@ -60,7 +60,7 @@ params:
     profile: 
       enable: true
       gravatarEmail: ""
-      avatarURL: "/images/profile.jpg"
+      avatarURL: "/images/profile.png"
       title: "Samuel Nwoye"
       subtitle: "An Infrastructure Engineer Keen on Security."
       typeit: false

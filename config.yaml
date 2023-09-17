@@ -2,7 +2,7 @@ baseURL: "https://knoxknot.github.io/"
 defaultContentLanguage: "en"
 enableEmoji: true
 enableRobotsTXT : true
-googleAnalytics: ""
+googleAnalytics: "G-CNTJYNYY07"
 languageCode: "en-us"
 paginate: 5
 title: "DevSecOps"
@@ -51,9 +51,9 @@ params:
   keywords: ["infrastructure", "security", "software", "engineering", "ethical hacking", "penetration testing", "Samuel Nwoye"]
   
   analytics:
-    enable: false
+    enable: true
     google:
-      id: ""
+      id: "G-CNTJYNYY07"
       anonymizeIP: false
 
   home:

@@ -148,22 +148,29 @@ params:
     thumbnailUrl: "images/devsecops-small.png"
 
   social:
-    github:
+    email:
       weight: 1
+      title : "Email"
+      id: "inquiry@samuelnwoye.website"
+      prefix : "mailto://"
+      icon : 
+        class: "fas fa-envelope fa-fw"
+    github:
+      weight: 2
       title : "GitHub"
       id: "knoxknot"
       prefix : "https://github.com/"
       icon : 
         class: "fab fa-github fa-fw"
     linkedin:
-      weight: 2
+      weight: 3
       title : "Linkedin"
       id: "samuelnwoye"
       prefix : "https://linkedin.com/in/"
       icon : 
         class: "fab fa-linkedin fa-fw"
     twitter:
-      weight: 3
+      weight: 4
       title : "Twitter"
       id: "nwoyesamuelc"
       prefix : "https://twitter.com/"

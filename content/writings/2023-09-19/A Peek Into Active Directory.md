@@ -24,7 +24,7 @@ Download [VMWare Workstation Player](https://customerconnect.vmware.com/en/downl
 
 {{< raw >}}
 <figure>
-  <video controls width="640" height="480" style="display:block; margin:auto;">
+  <video controls width="500" height="500" style="display:block; margin:auto;">
     <source src="/videos/ad/vmware-workstation-player-installation.mp4" type="video/mp4">
   </video>
   <figcaption><b>VMWare Installation</b></figcaption>
@@ -35,7 +35,7 @@ Download [VMWare Workstation Player](https://customerconnect.vmware.com/en/downl
 
 {{< raw >}}
 <figure>
-  <video controls width="640" height="480" style="display:block; margin:auto;">
+  <video controls width="500" height="500" style="display:block; margin:auto;">
     <source src="/videos/ad/windows-server-installation.mp4" type="video/mp4">
   </video>
   <figcaption><b>Windows Server 2022 Installation</b></figcaption>
@@ -46,7 +46,7 @@ Download [VMWare Workstation Player](https://customerconnect.vmware.com/en/downl
 
 {{< raw >}}
 <figure>
-  <video controls width="640" height="480" style="display:block; margin:auto;">
+  <video controls width="500" height="500" style="display:block; margin:auto;">
     <source src="/videos/ad/windows11-installation.mp4" type="video/mp4">
   </video>
   <figcaption><b>Windows 11 Installation</b></figcaption>
@@ -80,7 +80,7 @@ C:\Users\Administrator> netsh dhcp show server     :: list server details
  
 {{< raw >}}
 <figure>
-  <video controls width="640" height="480" style="display:block; margin:auto;">
+  <video controls width="500" height="500" style="display:block; margin:auto;">
     <source src="/videos/ad/windows-server-ad-dns-dhcp-configuration.mp4" type="video/mp4">
   </video>
   <figcaption><b>Windows Server AD, DNS, DHCP Configuration</b></figcaption>
@@ -107,7 +107,7 @@ To join a Client Computer to the Domain: Enter 'Device specification' on Windows
 
 {{< raw >}}
 <figure>
-  <video controls width="640" height="480" style="display:block; margin:auto;">
+  <video controls width="500" height="500" style="display:block; margin:auto;">
     <source src="/videos/ad/joining-client-to-domain-server.mp4" type="video/mp4">
   </video>
   <figcaption><b>Joining Client to Domain Server</b></figcaption>
@@ -125,7 +125,7 @@ Now jumping back to the Client VM let's log on to the domain with the user: Clic
 
 {{< raw >}}
 <figure>
-  <video controls width="640" height="480" style="display:block; margin:auto;">
+  <video controls width="500" height="500" style="display:block; margin:auto;">
     <source src="/videos/ad/operating-active-directory.mp4" type="video/mp4">
   </video>
   <figcaption><b>Operating Active Directory</b></figcaption>

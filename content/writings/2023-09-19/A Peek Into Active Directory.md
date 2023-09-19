@@ -24,7 +24,7 @@ Download [VMWare Workstation Player](https://customerconnect.vmware.com/en/downl
 
 {{< raw >}}
 <figure>
-  <video controls width="500" height="500" style="display:block; margin:auto;">
+  <video controls width="500" height="500" style="display: block; margin: auto;">
     <source src="/videos/ad/vmware-workstation-player-installation.mp4" type="video/mp4">
   </video>
   <figcaption><b>VMWare Installation</b></figcaption>
@@ -45,8 +45,8 @@ Download [VMWare Workstation Player](https://customerconnect.vmware.com/en/downl
 **Windows 11 Installation:** Double Click the now installed VMWare Workstation Player -> Click `Create a New Virtual Machine` -> Select `Installer disc image file (iso)` and browse to the location of the downloaded iso then Click `Next` -> Enter a name in `Virtual machine name:` box and navigate to a desired storage location using `Browse...` and Enter a name in `Location:` box then Click `Next` -> Select `All the files (.vmdk,vmx, etc) for this virtual machine are encrypted`, Enter and confirm the Password in the textbox, and Check `Remember the password on this machine in Credential Manager` then Click `Next` -> Enter a disk size in `Maximum disk size(GB):` box, Select `Store virtual disk as a single file` and Click `Next` -> Click `Customize Hardware`; Click `Printer`, Click `Remove`; Click `Memory` and ramp it upto 4GB; then Click `Close` -> Click `Finish` ->  Accept all prompts and Press any key to boot from CD or DVD -> Click `Next` -> Click `Install now` -> Click `I don't have a product key` -> Select `Windows 11 Pro` and Click `Next`. Now Select your language of choice and Click `Yes` -> Choose your keyboard layout and Click `Yes` -> You may skip `Do you want to add a second keyboard layout?` -> Enter a device name and Click `Next` -> Choose `Set up for work or school` and Click `Next` -> You may sign or create an account to proceed, a quick hack was to enter a wrong credentials multiple times to display an error page and activate the Next Tab, Click `Next` -> Enter a name and Click `Next` ->  Enter a Password and Click `Next` ->  Confirm the Password and Click `Next` -> Give an answer to three `Security questions` and Click `Next` -> Turn on/off the settings you desire and Click `Accept` -> Click `Player` on the top Menu bar, Select Send CTRL + ALT + DEL, and Enter the user password to login.
 
 {{< raw >}}
-<figure>
-  <video controls width="500" height="500" style="display:block; margin:auto;">
+<figure style="width: 100%;">
+  <video controls style="max-width: 100%; height: auto; display: block; margin: auto;">
     <source src="/videos/ad/windows11-installation.mp4" type="video/mp4">
   </video>
   <figcaption><b>Windows 11 Installation</b></figcaption>
@@ -79,8 +79,8 @@ C:\Users\Administrator> netsh dhcp show server     :: list server details
 ```
  
 {{< raw >}}
-<figure>
-  <video controls width="500" height="500" style="display:block; margin:auto;">
+<figure style="width: 100%;">
+  <video controls style="max-width: 100%; height: auto; display: block; margin: auto;">
     <source src="/videos/ad/windows-server-ad-dns-dhcp-configuration.mp4" type="video/mp4">
   </video>
   <figcaption><b>Windows Server AD, DNS, DHCP Configuration</b></figcaption>
@@ -106,8 +106,8 @@ C:\Users\bug-hunter> nslookup 192.168.20.1  :: resolves via DNS server
 To join a Client Computer to the Domain: Enter 'Device specification' on Windows Search  and Click on it -> Locate `Related links` and Click on `Domain or workgroup` -> Click `Change` -> Select `Domain`, Enter the domain name and Click `OK` -> Enter the domain server Administrator credentials and Click `OK` -> Click `OK` -> Click `OK` -> Click `Close` -> Click `Restart Now`.
 
 {{< raw >}}
-<figure>
-  <video controls width="500" height="500" style="display:block; margin:auto;">
+<figure style="width: 100%;">
+  <video controls style="max-width: 100%; height: auto; display: block; margin: auto;">
     <source src="/videos/ad/joining-client-to-domain-server.mp4" type="video/mp4">
   </video>
   <figcaption><b>Joining Client to Domain Server</b></figcaption>
@@ -124,8 +124,8 @@ It is important to structure your AD by Organizational Unit instead of creating 
 Now jumping back to the Client VM let's log on to the domain with the user: Click `Other user` -> Enter the credentials of the user created on the domain server and hit the Enter button. 
 
 {{< raw >}}
-<figure>
-  <video controls width="500" height="500" style="display:block; margin:auto;">
+<figure style="width: 100%;">
+  <video controls style="max-width: 100%; height: auto; display: block; margin: auto;">
     <source src="/videos/ad/operating-active-directory.mp4" type="video/mp4">
   </video>
   <figcaption><b>Operating Active Directory</b></figcaption>

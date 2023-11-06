@@ -169,13 +169,13 @@ params:
       prefix : "https://linkedin.com/in/"
       icon : 
         class: "fab fa-linkedin fa-fw"
-    twitter:
-      weight: 4
-      title : "Twitter"
-      id: "nwoyesamuelc"
-      prefix : "https://twitter.com/"
-      icon : 
-        class: "fab fa-twitter fa-fw"
+    twitter: nwoyesamuelc
+      # weight: 4
+      # title : "Twitter"
+      # id: "nwoyesamuelc"
+      # prefix : "https://twitter.com/"
+      # icon : 
+      #   class: "fab fa-twitter fa-fw"
 
   typeit:
     cursorChar: "|"

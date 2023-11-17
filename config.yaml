@@ -235,7 +235,6 @@ sitemap:
 
 taxonomies:
   category: categories
-  project: projects
   series: series
   tag: tags
   type: types

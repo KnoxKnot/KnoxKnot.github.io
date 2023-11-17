@@ -40,7 +40,6 @@ menu:
 module:
   hugoVersion:
     extended: true
-    min: "0.111.1"
 
 params:
   title : "DevSecOps"

@@ -40,6 +40,7 @@ menu:
 module:
   hugoVersion:
     extended: true
+    min: "0.120.3"
 
 params:
   title : "DevSecOps"
@@ -220,6 +221,7 @@ outputs:
   page: ["HTML","MarkDown"]
   section: ["HTML","RSS"]
   taxonomy: ["HTML","RSS"]
+  ignoreErrors: ["error-output-taxonomy"]
 
 permalinks:
   writings: ":sections/:slug/"
@@ -233,8 +235,10 @@ sitemap:
 
 taxonomies:
   category: categories
+  project: projects
   series: series
   tag: tags
+  type: types
 
 timeout: 30000
 

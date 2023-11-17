@@ -221,6 +221,7 @@ outputs:
   page: ["HTML","MarkDown"]
   section: ["HTML","RSS"]
   taxonomy: ["HTML","RSS"]
+  taxonomyTerm: ["HTML"]
 
 permalinks:
   writings: ":sections/:slug/"

@@ -1,5 +1,5 @@
 --- 
-title: "Building a Personal Network and Host Defense System Part 2: Implementing a Firewall With IPTable"
+title: "Building a Personal Network and Host Defense System Part 2: Implementing a Firewall With  NFTable"
 author: ""
 date: 2023-11-20T02:14:51+01:00
 description: ""

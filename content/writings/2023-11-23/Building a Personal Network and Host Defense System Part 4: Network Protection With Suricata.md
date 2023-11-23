@@ -31,7 +31,7 @@ vagrant up --provision-with ansible # start and configure the vm
 ```  
 Log into the machine with your specified credentials and run the following commands to observe traffic logs.
 ```shell
-# check the status of zeek
+# check the status of suricata
 sudo systemctl status suricata
 
 # visit to a site

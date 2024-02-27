@@ -1,12 +1,14 @@
 #### Samuel Nwoye - Infrastructure Engineer with Security Skills.
 #### How the Site was Created and Deployed
 ##### creating the site
+```shell
 hugo new site knoxknot.github.io --format yaml  # create a new site
 cd knoxknot.github.io # change into the directory
 git clone https://github.com/dillonzq/LoveIt themes/LoveIt  # clone a theme
 rm -fr themes/LoveIt/{.git,exampleSite,resources}  # personalize the theme
-
+```
 ##### describing the project
+```shell
 gh auth login -h github.com -p https -w # authenticate to github
 gh auth setup-git # configure git to use gh as credential helper
 gh repo create knoxknot.github.io --public --homepage https://github.com/knoxknot --description "Personal Page" # create the remote repository
@@ -19,8 +21,9 @@ git remote add origin https://github.com/knoxknot/knoxknot.github.io.git # point
 git commit --allow-empty -m "initial commit" # initial empty commit
 git push -u origin main # push to remote main
 git checkout -b develop
-
+```
 ##### developing the site
+```shell
 hugo new --kind writings writings/2023-03-27/'New Writeup.md'  # create an article
 hugo server -D --disableFastRender  # view the article
 touch .gitignore CNAME README.md   # create and update these files
@@ -34,8 +37,9 @@ tee CNAME <<EOF
 samuelnwoye.website
 www.samuelnwoye.website
 EOF
-
+```
 ##### install pre-commit hooks
+```shell
 tee .pre-commit-config.yaml <<EOF
 repos:
 - repo: https://github.com/zricethezav/gitleaks
@@ -46,8 +50,8 @@ EOF # write pre-commit hooks
 pre-commit install # install hook at .git/hooks/pre-commit
 pre-commit autoupdate # update hook repos to latest version
 pre-commit run --all-files # run hooks
-
 git push -u origin develop
 git add .
 git commit -m "chore: developed initial layout"
 git push
+```

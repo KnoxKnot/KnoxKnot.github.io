@@ -70,7 +70,7 @@ jobs:
     
     - name: setup pages
       id: pages
-      uses: actions/configure-pages@v4
+      uses: actions/configure-pages@v3
     
     - name: build with hugo
       run: hugo --gc --minify --baseURL "${{ steps.pages.output.base_url}}"
@@ -109,7 +109,7 @@ jobs:
     
     - name: deploy to github pages
       id: deployment
-      uses: actions/deploy-pages@v4
+      uses: actions/deploy-pages@v2
     
     environment:
       name: github-pages

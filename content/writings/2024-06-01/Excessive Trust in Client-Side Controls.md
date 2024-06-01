@@ -117,4 +117,4 @@ Paste the above on the exploit server and deliver exploit to victim.
 
 #### Resources
 - https://portswigger.net/web-security/logic-flaws/examples/lab-logic-flaws-excessive-trust-in-client-side-controls
-- https://github.com/knoxknot/portswigger/tree/main/businsess-logic/01-excessive-trust-in-client-side-controls
+- https://github.com/knoxknot/portswigger/tree/main/business-logic/01-excessive-trust-in-client-side-controls

